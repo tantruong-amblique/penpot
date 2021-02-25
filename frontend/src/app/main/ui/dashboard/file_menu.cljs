@@ -58,6 +58,11 @@
                        :accept-label (tr "modals.delete-file-confirm.accept")
                        :on-accept delete-fn}))))
 
+        on-move
+        (mf/use-callback
+         (mf/deps file)
+         (fn []))
+
         add-shared
         (mf/use-callback
          (mf/deps file)
@@ -106,8 +111,12 @@
                       :options [[(tr "dashboard.open-in-new-tab") on-new-tab]
                                 [(tr "labels.rename") on-edit]
                                 [(tr "dashboard.duplicate") on-duplicate]
-                                [(tr "labels.delete") on-delete]
+                                [(tr "dashboard.move-to") nil
+                                 [[(tr "labels.drafts") on-move]
+                                  ["Project-2" on-move]]]
                                 (if (:is-shared file)
                                   [(tr "dashboard.remove-shared") on-del-shared]
-                                  [(tr "dashboard.add-shared") on-add-shared])]}]))
+                                  [(tr "dashboard.add-shared") on-add-shared])
+                                [:separator]
+                                [(tr "labels.delete") on-delete]]}]))
 

@@ -35,6 +35,12 @@
     overflow: auto;
     position: absolute;
     top: $size-3;
+
+    & .separator {
+      border-top: 1px solid $color-gray-10;
+      padding: 0px;
+      margin: 2px;
+    }
 }
 
 .context-menu-action {
