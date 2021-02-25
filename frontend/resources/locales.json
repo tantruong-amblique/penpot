@@ -441,6 +441,13 @@
     },
     "used-in" : [ "src/app/main/ui/dashboard/files.cljs" ]
   },
+  "dashboard.duplicate" : {
+    "translations" : {
+      "en" : "Duplicate",
+      "es" : "Duplicar"
+    },
+    "used-in" : [ "src/app/main/ui/dashboard/file_menu.cljs" ]
+  },
   "dashboard.empty-files" : {
     "translations" : {
       "ca" : "Encara no hi ha cap arxiu aquí",

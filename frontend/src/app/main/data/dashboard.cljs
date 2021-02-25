@@ -347,6 +347,24 @@
                (rx/map #(partial created %))
                (rx/catch on-error)))))))
 
+(defn duplicate-project
+  [{:keys [id] :as params}]
+  (us/assert ::us/uuid id)
+  (letfn [(duplicated [project state]
+            (-> state
+                (assoc-in [:projects (:team-id project) (:id project)] project)
+                (assoc-in [:dashboard-local :project-for-edit] (:id project))))]
+    (ptk/reify ::duplicate-project
+      ptk/WatchEvent
+      (watch [_ state stream]
+        (let [{:keys [on-success on-error]
+               :or {on-success identity
+                    on-error identity}} (meta params)]
+          (->> (rp/mutation! :duplicate-project {:project-id id})
+               (rx/tap on-success)
+               (rx/map #(partial duplicated %))
+               (rx/catch on-error)))))))
+
 (def clear-project-for-edit
   (ptk/reify ::clear-project-for-edit
     ptk/UpdateEvent
@@ -494,3 +512,21 @@
       (-> state
           (assoc-in [:files project-id id] file)
           (update-in [:recent-files project-id] (fnil conj #{}) id)))))
+
+;; --- Duplicate File
+
+(defn duplicate-file
+  [{:keys [id] :as params}]
+  (us/assert ::us/uuid id)
+  (ptk/reify ::duplicate-file
+    ptk/WatchEvent
+    (watch [_ state stream]
+      (let [{:keys [on-success on-error]
+             :or {on-success identity
+                  on-error identity}} (meta params)]
+
+        (->> (rp/mutation! :duplicate-file {:file-id id})
+             (rx/tap on-success)
+             (rx/map file-created)
+             (rx/catch on-error))))))
+

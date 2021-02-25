@@ -26,6 +26,11 @@
   (let [top  (or top 0)
         left (or left 0)
 
+        on-duplicate
+        (mf/use-callback
+         (mf/deps project)
+         (st/emitf (dd/duplicate-project project)))
+
         delete-fn
         (mf/use-callback
           (mf/deps project)
@@ -49,5 +54,6 @@
                       :top top
                       :left left
                       :options [[(tr "labels.rename") on-edit]
+                                [(tr "dashboard.duplicate") on-duplicate]
                                 [(tr "labels.delete") on-delete]]}]))
 
