@@ -39,12 +39,11 @@
 (def ^:dynamic *pool* nil)
 
 (def config
-  (merge {:redis-uri "redis://redis/1"
+  (merge cfg/config
+         {:redis-uri "redis://redis/1"
           :database-uri "postgresql://postgres/penpot_test"
           :storage-fs-directory "/tmp/app/storage"
-          :migrations-verbose false}
-         cfg/config))
-
+          :migrations-verbose false}))
 
 (defn state-init
   [next]
@@ -53,8 +52,10 @@
                            :app.http/server
                            :app.http/router
                            :app.notifications/handler
-                           :app.http.auth/google
-                           :app.http.auth/gitlab
+                           :app.http.oauth/google
+                           :app.http.oauth/gitlab
+                           :app.http.oauth/github
+                           :app.http.oauth/all
                            :app.worker/scheduler
                            :app.worker/worker)
                    (d/deep-merge
@@ -201,6 +202,11 @@
                                    :is-admin true
                                    :can-edit true})
      team)))
+
+(defn link-file-to-library*
+  ([params] (link-file-to-library* *pool* params))
+  ([conn {:keys [file-id library-id] :as params}]
+   (#'files/link-file-to-library conn {:file-id file-id :library-id library-id})))
 
 
 (defn handle-error
